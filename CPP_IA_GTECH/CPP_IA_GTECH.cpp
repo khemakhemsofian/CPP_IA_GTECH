@@ -1,20 +1,37 @@
-// CPP_IA_GTECH.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
-//
-
+#include <SFML/Graphics.hpp>
 #include <iostream>
+#include "PNJ.h"
 
-int main()
-{
-    std::cout << "Hello World!\n";
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Détection PNJ");
+    std::vector<sf::Vector2f> waypoints = { sf::Vector2f(100, 300), sf::Vector2f(500, 300), sf::Vector2f(300, 100), sf::Vector2f(200, 400), sf::Vector2f(600, 200) };
+    PNJ pnj(sf::Vector2f(400, 300), 100.0f, 0.5f, 0.25f, 0.1f, 5.0f, waypoints);
+    sf::CircleShape player(10);
+    player.setFillColor(sf::Color::Blue);
+
+    sf::Vector2f playerPos(100, 100);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) playerPos.x += 0.25f;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) playerPos.x -= 0.25f;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) playerPos.y += 0.25f;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) playerPos.y -= 0.25f;
+
+        player.setPosition(playerPos);
+
+        pnj.update(playerPos);
+
+        window.clear();
+        window.draw(player);
+        pnj.draw(window);
+        window.display();
+    }
+
+    return 0;
 }
-
-// Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
-// Déboguer le programme : F5 ou menu Déboguer > Démarrer le débogage
-
-// Astuces pour bien démarrer : 
-//   1. Utilisez la fenêtre Explorateur de solutions pour ajouter des fichiers et les gérer.
-//   2. Utilisez la fenêtre Team Explorer pour vous connecter au contrôle de code source.
-//   3. Utilisez la fenêtre Sortie pour voir la sortie de la génération et d'autres messages.
-//   4. Utilisez la fenêtre Liste d'erreurs pour voir les erreurs.
-//   5. Accédez à Projet > Ajouter un nouvel élément pour créer des fichiers de code, ou à Projet > Ajouter un élément existant pour ajouter des fichiers de code existants au projet.
-//   6. Pour rouvrir ce projet plus tard, accédez à Fichier > Ouvrir > Projet et sélectionnez le fichier .sln.
