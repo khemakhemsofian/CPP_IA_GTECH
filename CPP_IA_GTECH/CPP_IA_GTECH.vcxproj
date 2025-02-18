@@ -134,9 +134,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CPP_IA_GTECH.cpp" />
+    <ClCompile Include="GRID.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="PNJ.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GRID.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="PNJ.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

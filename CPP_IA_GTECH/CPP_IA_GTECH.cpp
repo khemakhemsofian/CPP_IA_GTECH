@@ -1,34 +1,38 @@
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include "PNJ.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Détection PNJ");
-    std::vector<sf::Vector2f> waypoints = { sf::Vector2f(100, 300), sf::Vector2f(500, 300), sf::Vector2f(300, 100), sf::Vector2f(200, 400), sf::Vector2f(600, 200) };
-    PNJ pnj(sf::Vector2f(400, 300), 100.0f, 0.5f, 0.25f, 0.1f, 5.0f, waypoints);
-    sf::CircleShape player(10);
-    player.setFillColor(sf::Color::Blue);
+    sf::RenderWindow window(sf::VideoMode(GRID_WIDTH * CELL_SIZE, GRID_HEIGHT * CELL_SIZE), "Pathfinding");
 
-    sf::Vector2f playerPos(100, 100);
+    Grid grid;
+    PNJ pnj({ 0, 0 });
+    sf::Vector2i target(15, 10);
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                // Ajouter/Supprimer des obstacles avec clic gauche
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    grid.handleClick(event.mouseButton.x, event.mouseButton.y);
+                    pnj.needsRepath = true; // Demander un recalcul du chemin
+                }
+
+                // Définir un nouvel objectif avec clic droit
+                if (event.mouseButton.button == sf::Mouse::Right) {
+                    target = { event.mouseButton.x / CELL_SIZE, event.mouseButton.y / CELL_SIZE };
+                    pnj.needsRepath = true;
+                }
+            }
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) playerPos.x += 0.25f;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) playerPos.x -= 0.25f;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) playerPos.y += 0.25f;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) playerPos.y -= 0.25f;
-
-        player.setPosition(playerPos);
-
-        pnj.update(playerPos);
+        pnj.update(grid, target);
 
         window.clear();
-        window.draw(player);
+        grid.draw(window);
         pnj.draw(window);
         window.display();
     }
